@@ -70,6 +70,40 @@ namespace DAL
         }
         #endregion
 
+        #region 执行学生修改密码
+        /// <summary>
+        /// 执行学生修改密码
+        /// </summary>
+        /// <param name="loginId">修改密码的学号</param>
+        /// <param name="loginOPwd">学生的旧密码</param>
+        /// <param name="loginNPwd">学生的新密码</param>
+        /// <returns></returns>
+
+        public bool ChangeStuPwd(string loginId, string loginOPwd, string loginNPwd)
+        {
+            bool flag;
+            string sql = @"update Student set StuPwd=@loginNPwd where StuNo=@loginId and StuPwd=@loginOPwd";
+            //设置参数
+            SqlParameter[] paras =
+            {
+                new SqlParameter("@loginId",loginId),
+                new SqlParameter("@loginOPwd",loginOPwd),
+                new SqlParameter("@loginNPwd",loginNPwd)
+            };
+            SqlDataReader reader = SQLHelper.ExecuteReader(sql, CommandType.Text, paras);
+            if (reader.Read())
+            {
+                flag = true;
+            }
+            else
+            {
+                flag = false;
+            }
+            return flag;
+        }
+
+        #endregion
+
         #region 2.1根据学号获取学生对象
         /// <summary>
         /// 根据学号获取学生信息
@@ -104,7 +138,7 @@ namespace DAL
         /// <returns>返回受影响行数</returns>
         public int UpdateStu(StudentData studentData)
         {
-            string sql = @"update  Student set  StuPhone=@StuPhone,StuQQ=@StuQQ,StuEmail=@StuEmail,StuPerIntro=@StuPerIntro,StuHonors=@StuHonors,StuPwd=@StuPwd where StuNo=@StuNo";
+            string sql = @"update  Student set  StuPhone=@StuPhone,StuQQ=@StuQQ,StuEmail=@StuEmail,StuPerIntro=@StuPerIntro,StuHonors=@StuHonors where StuNo=@StuNo";
             SqlParameter[] sqlParameter = new SqlParameter[]
             {
                 new SqlParameter("@StuPhone",SqlDbType.NVarChar),
@@ -112,7 +146,6 @@ namespace DAL
                 new SqlParameter("@StuEmail",SqlDbType.NVarChar),
                 new SqlParameter("@StuPerIntro",SqlDbType.NVarChar),
                 new SqlParameter("@StuHonors",SqlDbType.NVarChar),
-                new SqlParameter("@StuPwd",SqlDbType.NVarChar),
                 new SqlParameter("@StuNo",studentData.StuNo)
             };
             sqlParameter[0].Value = studentData.StuPhone;
@@ -120,7 +153,6 @@ namespace DAL
             sqlParameter[2].Value = studentData.StuEmail;
             sqlParameter[3].Value = studentData.StuPerIntro;
             sqlParameter[4].Value = studentData.StuHonors;
-            sqlParameter[5].Value = studentData.StuPwd;
             int result = SQLHelper.ExecuteNonQuery(sql, CommandType.Text, sqlParameter);//执行insert/update/delete，返回受影响的行数
             return result;
         }
@@ -179,8 +211,7 @@ namespace DAL
         /// <returns>true:已组过队，false:未组过队</returns>
         public bool IsCreateGroup(string stuno)
         {
-            string sql = @"select GroupID ,StuNo  from GroupStu where StuNo =@StuNo 
-";
+            string sql = @"select GroupID ,StuNo  from GroupStu where StuNo =@StuNo";
             SqlParameter[] sqlParameters = new SqlParameter[]
             {
             new SqlParameter("@StuNo",SqlDbType.NVarChar)

@@ -17,7 +17,6 @@ namespace GUI.UI
         StudentData student = new StudentData()
         {
             StuNo = LoginInterface.loginid
-            //StuNo = "16209010016"
         };
         GroupTableData groupTableData = new GroupTableData();
         TeacherData teacher = new TeacherData();
@@ -44,9 +43,15 @@ namespace GUI.UI
         private void XTeacherList_Load(object sender, EventArgs e)
         {
             dataGridView1.DataSource = sm.StuCheckTeaList();
-            if (!sm.IsLeader(student.StuNo))
+            if (!sm.IsCreateGroup(student.StuNo))
             {
                 groupBox2.Enabled = false;
+                label11.Text = "*请先组队后再进行志愿填报";
+            }
+            else if (!sm.IsLeader(student.StuNo))
+            {
+                groupBox2.Enabled = false; 
+                label11.Text = "*请联系队长填报志愿";
             }
         }
 
@@ -72,16 +77,6 @@ namespace GUI.UI
                 this.Controls.Add(dPersonalInformation);
                 dPersonalInformation.Show();
             }
-            /*else if (e.ColumnIndex == dataGridView1.Columns["操作1"].Index)
-            {
-                //点击选择弹出志愿序号进行选择
-                //dataGridView1.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.Blue;//点击后该行颜色改变
-                dataGridView1["操作1", e.RowIndex].Value = "已选择"; 
-            }
-            else if (e.ColumnIndex == dataGridView1.Columns["操作2"].Index)
-            {
-                dataGridView1["操作1", e.RowIndex].Value = "选择";
-            }*/
         }
 
         private void BtnVolFirst_Click(object sender, EventArgs e)
